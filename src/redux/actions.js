@@ -1,4 +1,10 @@
-import { ADD_POST, FETCH_POSTS, REGISTER_USER } from "./actionTypes";
+import {
+  ADD_POST,
+  FETCH_POSTS,
+  LOGIN,
+  LOGOUT,
+  REGISTER_USER
+} from "./actionTypes";
 
 export const addPost = (post) => ({
   type: ADD_POST,
@@ -10,6 +16,11 @@ export const fetchPost = () => {
     const response = await fetch(
       "https://jsonplaceholder.typicode.com/posts?_limit=5"
     );
+
+    if (response.status === 401) {
+      dispatch({ type: LOGOUT });
+      return;
+    }
     const json = await response.json();
     dispatch({ type: FETCH_POSTS, payload: json });
   };
@@ -26,6 +37,7 @@ export const registerUser = (user) => {
       body: JSON.stringify(user),
     });
     const json = await response.json();
+    dispatch({ type: LOGIN });
     console.log(json);
   };
 };
@@ -43,6 +55,7 @@ export const loginUser = (user) => {
     const json = await response.json();
     localStorage.setItem("token", json.access_token);
     dispatch({ type: REGISTER_USER, payload: json });
+    dispatch({ type: LOGIN });
     console.log(json);
   };
 };
