@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SyncPosts from "./components/SyncPosts";
 import AsyncPosts from "./components/AsyncPosts";
 import { Switch, Route, Link } from "react-router-dom";
 import About from './components/About';
 import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './components/LoginPage';
+import SingUp from "./components/SingUp";
+import { connect } from "react-redux";
+import {getProfileFetch} from './redux/actions'
 
 
-const App = () => {
+const App = ({getProfileFetch}) => {
+  useEffect(()=> {
+    getProfileFetch()
+  })
   return (
     <div className="App">
       <div className="container">
@@ -19,7 +25,10 @@ const App = () => {
             <Link to="/syncPost">Создать синхронный пост</Link>
           </li>
           <li>
-            <Link to="/asyncPost">Создать синхронный пост</Link>
+            <Link to="/asyncPost">Создать асинхронный пост</Link>
+          </li>
+          <li>
+            <Link to="/singup">Регистрация</Link>
           </li>
         </ul>
         <hr />
@@ -31,6 +40,9 @@ const App = () => {
           </Route>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/singup">
+            <SingUp/>
           </Route>
           <PrivateRoute path="/asyncPost">
             <AsyncPosts />
@@ -44,4 +56,7 @@ const App = () => {
   );
 };
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+  getProfileFetch: () => dispatch(getProfileFetch())
+})
+export default connect(null,mapDispatchToProps)(App);
